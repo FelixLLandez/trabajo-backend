@@ -1,0 +1,17 @@
+import { Column } from 'typeorm';
+import { PrimaryGeneratedColumn } from 'typeorm/decorator/columns/PrimaryGeneratedColumn';
+import { Entity } from 'typeorm/decorator/entity/Entity';
+
+@Entity('task')
+export class Task {
+  @PrimaryGeneratedColumn()
+  id: number;
+  @Column('text')
+  title: string;
+  @Column('text')
+  description: string;
+  @Column('bool', { default: false })
+  estate: boolean;
+  @Column()
+  important: number;
+}
