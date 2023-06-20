@@ -8,14 +8,14 @@ export class User {
   nombre: string;
   @Column('text')
   apellidos: string;
-  @Column('text')
+  @Column('text', { unique: true }) //para no repetir los correos
   email: string;
-  @Column('text')
+  @Column('text', { select: false })
   password: string;
-  @Column('bool', { default: false })
+  @Column('bool', { default: true })
   estado: boolean;
   @Column('text')
   sexo: string;
-  @Column()
+  @Column('int', { nullable: true })
   edad: number;
 }
