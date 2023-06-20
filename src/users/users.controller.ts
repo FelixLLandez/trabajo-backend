@@ -12,6 +12,7 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { loginDto } from './dto/login.dto';
 
 @Controller('users')
 @UsePipes(new ValidationPipe())
@@ -21,6 +22,11 @@ export class UsersController {
   @Post('register')
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
+  }
+
+  @Post('login')
+  login(@Body() user: loginDto) {
+    return this.usersService.login(user);
   }
 
   @Get()

@@ -1,10 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { loginDto } from './dto/login.dto';
 
 @Injectable()
 export class UsersService {
@@ -20,6 +25,7 @@ export class UsersService {
         password: bcrypt.hashSync(password, 10),
       });
       await this.userRepository.save(user);
+      delete user.password;
       return { ...user };
     } catch (error) {
       return error;
@@ -59,5 +65,31 @@ export class UsersService {
   remove(id: number) {
     this.userRepository.delete(id);
     return `This action removes a #${id} user`;
+  }
+
+  async login(user: loginDto) {
+    const { password, email } = user;
+    const userFind = await this.userRepository.findOne({
+      where: { email },
+      select: {
+        password: true,
+        edad: true,
+        email: true,
+        nombre: true,
+        apellidos: true,
+        sexo: true,
+        estado: true,
+      },
+    });
+    if (!userFind) {
+      throw new UnauthorizedException('Credentials not found');
+    }
+    if (!bcrypt.compareSync(password, userFind.password)) {
+      throw new UnauthorizedException('Credentials not found');
+    }
+    delete userFind.password;
+    return { ...userFind };
+    //console.log(userFind);
+    //return userFind;
   }
 }
