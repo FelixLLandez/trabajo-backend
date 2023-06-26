@@ -8,6 +8,7 @@ import {
   Delete,
   ValidationPipe,
   UsePipes,
+  Query,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -41,5 +42,10 @@ export class TaskController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.taskService.remove(+id);
+  }
+
+  @Get('search')
+  search(@Query('termino') termino: string) {
+    return this.taskService.search(termino);
   }
 }

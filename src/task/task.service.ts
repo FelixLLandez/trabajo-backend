@@ -4,6 +4,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './entities/task.entity';
 import { Repository } from 'typeorm/repository/Repository';
+import { Like } from 'typeorm';
 
 @Injectable()
 export class TaskService {
@@ -48,5 +49,12 @@ export class TaskService {
   remove(id: number) {
     this.taskRepository.delete(id);
     return `This action removes a #${id} task`;
+  }
+
+  async search(termino: string) {
+    const tasks = await this.taskRepository.find({
+      where: { title: Like(`%${termino}%`) },
+    });
+    return tasks;
   }
 }
