@@ -10,11 +10,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { loginDto } from './dto/login.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    private jwts: JwtService,
   ) {}
   async create(createUserDto: CreateUserDto) {
     //return 'This action adds a new user';
@@ -88,8 +90,23 @@ export class UsersService {
       throw new UnauthorizedException('Credentials not found');
     }
     delete userFind.password;
-    return { ...userFind };
+    return {
+      ...userFind,
+      token: this.getJWToken({
+        id: userFind.id,
+        nombre: userFind.nombre,
+        apellidos: userFind.apellidos,
+      }),
+    };
     //console.log(userFind);
     //return userFind;
+  }
+  private getJWToken(payload: {
+    id: number;
+    nombre: string;
+    apellidos: string;
+  }) {
+    const token = this.jwts.sign(payload);
+    return token;
   }
 }
