@@ -11,6 +11,13 @@ export class TaskService {
   constructor(
     @InjectRepository(Task) private taskRepository: Repository<Task>,
   ) {}
+  async search(termino: string) {
+    const tasks = await this.taskRepository.find({
+      where: { title: Like(`%${termino}%`) },
+    });
+    return tasks;
+  }
+
   async create(createTaskDto: CreateTaskDto) {
     //return 'This action adds a new task';
     const task = this.taskRepository.create(createTaskDto);
@@ -49,12 +56,5 @@ export class TaskService {
   remove(id: number) {
     this.taskRepository.delete(id);
     return `This action removes a #${id} task`;
-  }
-
-  async search(termino: string) {
-    const tasks = await this.taskRepository.find({
-      where: { title: Like(`%${termino}%`) },
-    });
-    return tasks;
   }
 }

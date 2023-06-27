@@ -19,6 +19,11 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
+  @Get('search')
+  search(@Query('termino') termino: string) {
+    return this.taskService.search(termino);
+  }
+
   @Post('createTask')
   create(@Body() createTaskDto: CreateTaskDto) {
     return this.taskService.create(createTaskDto);
@@ -42,10 +47,5 @@ export class TaskController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.taskService.remove(+id);
-  }
-
-  @Get('search')
-  search(@Query('termino') termino: string) {
-    return this.taskService.search(termino);
   }
 }
