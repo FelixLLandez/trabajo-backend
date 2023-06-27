@@ -24,6 +24,11 @@ export class TaskController {
     return this.taskService.search(termino);
   }
 
+  @Get('buscar')
+  buscar(@Query('importante') importante: number) {
+    return this.taskService.buscar(importante);
+  }
+
   @Post('createTask')
   create(@Body() createTaskDto: CreateTaskDto) {
     return this.taskService.create(createTaskDto);

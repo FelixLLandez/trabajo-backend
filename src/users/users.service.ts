@@ -46,6 +46,7 @@ export class UsersService {
   async findOne(id: number) {
     //return `This action returns a #${id} user`;
     const user = await this.userRepository.findOne({
+      relations: ['task'],
       where: { id },
     });
     if (!user) {

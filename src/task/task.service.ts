@@ -5,11 +5,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './entities/task.entity';
 import { Repository } from 'typeorm/repository/Repository';
 import { Like } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class TaskService {
   constructor(
     @InjectRepository(Task) private taskRepository: Repository<Task>,
+    @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
   async search(termino: string) {
     const tasks = await this.taskRepository.find({
@@ -17,10 +19,20 @@ export class TaskService {
     });
     return tasks;
   }
+  async buscar(importante: number) {
+    const tasks = await this.taskRepository.find({
+      where: { important: importante },
+    });
+    return tasks;
+  }
 
   async create(createTaskDto: CreateTaskDto) {
     //return 'This action adds a new task';
-    const task = this.taskRepository.create(createTaskDto);
+    const user = await this.userRepository.findOne({
+      where: { id: CreateTaskDto.id },
+    });
+    console.log(user);
+    const task = this.taskRepository.create({ ...createTaskDto, user: user });
     await this.taskRepository.save(task);
     return task;
   }
