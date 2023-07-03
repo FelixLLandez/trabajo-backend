@@ -18,6 +18,48 @@ export class UsersService {
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwts: JwtService,
   ) {}
+
+  async login(user: loginDto) {
+    const { password, email } = user;
+    const userFind = await this.userRepository.findOne({
+      where: { email },
+      select: {
+        password: true,
+        edad: true,
+        email: true,
+        nombre: true,
+        apellidos: true,
+        sexo: true,
+        estado: true,
+      },
+    });
+    if (!userFind) {
+      throw new UnauthorizedException('Credentials not found');
+    }
+    if (!bcrypt.compareSync(password, userFind.password)) {
+      throw new UnauthorizedException('Credentials not found');
+    }
+    delete userFind.password;
+    return {
+      ...userFind,
+      token: this.getJWToken({
+        id: userFind.id,
+        nombre: userFind.nombre,
+        apellidos: userFind.apellidos,
+      }),
+    };
+    //console.log(userFind);
+    //return userFind;
+  }
+  private getJWToken(payload: {
+    id: number;
+    nombre: string;
+    apellidos: string;
+  }) {
+    const token = this.jwts.sign(payload);
+    return token;
+  }
+
   async create(createUserDto: CreateUserDto) {
     //return 'This action adds a new user';
     try {
@@ -68,46 +110,5 @@ export class UsersService {
   remove(id: number) {
     this.userRepository.delete(id);
     return `This action removes a #${id} user`;
-  }
-
-  async login(user: loginDto) {
-    const { password, email } = user;
-    const userFind = await this.userRepository.findOne({
-      where: { email },
-      select: {
-        password: true,
-        edad: true,
-        email: true,
-        nombre: true,
-        apellidos: true,
-        sexo: true,
-        estado: true,
-      },
-    });
-    if (!userFind) {
-      throw new UnauthorizedException('Credentials not found');
-    }
-    if (!bcrypt.compareSync(password, userFind.password)) {
-      throw new UnauthorizedException('Credentials not found');
-    }
-    delete userFind.password;
-    return {
-      ...userFind,
-      token: this.getJWToken({
-        id: userFind.id,
-        nombre: userFind.nombre,
-        apellidos: userFind.apellidos,
-      }),
-    };
-    //console.log(userFind);
-    //return userFind;
-  }
-  private getJWToken(payload: {
-    id: number;
-    nombre: string;
-    apellidos: string;
-  }) {
-    const token = this.jwts.sign(payload);
-    return token;
   }
 }

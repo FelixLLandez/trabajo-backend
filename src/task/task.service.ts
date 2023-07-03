@@ -54,7 +54,6 @@ export class TaskService {
     return task;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async update(id: number, updateTaskDto: UpdateTaskDto) {
     //return `This action updates a #${id} task`;
     await this.taskRepository.update(id, updateTaskDto);
