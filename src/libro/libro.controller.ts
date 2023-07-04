@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { LibroService } from './libro.service';
 import { CreateLibroDto } from './dto/create-libro.dto';
@@ -14,6 +15,10 @@ import { UpdateLibroDto } from './dto/update-libro.dto';
 @Controller('libro')
 export class LibroController {
   constructor(private readonly libroService: LibroService) {}
+  @Get('search')
+  search(@Query('termino') termino: string) {
+    return this.libroService.search(termino);
+  }
 
   @Post('crear')
   create(@Body() createLibroDto: CreateLibroDto) {

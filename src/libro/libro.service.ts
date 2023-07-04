@@ -3,13 +3,19 @@ import { CreateLibroDto } from './dto/create-libro.dto';
 import { UpdateLibroDto } from './dto/update-libro.dto';
 import { Libro } from './entities/libro.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 
 @Injectable()
 export class LibroService {
   constructor(
     @InjectRepository(Libro) private libroRepository: Repository<Libro>,
   ) {}
+  async search(termino: string) {
+    const tasks = await this.libroRepository.find({
+      where: { clasificacion: Like(`%${termino}%`) },
+    });
+    return tasks;
+  }
   async create(createLibroDto: CreateLibroDto) {
     const libro = this.libroRepository.create({ ...createLibroDto });
     await this.libroRepository.save(libro);
