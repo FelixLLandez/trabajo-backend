@@ -13,11 +13,15 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { loginDto } from './dto/login.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('users')
 @UsePipes(new ValidationPipe())
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   @Post('register')
   create(@Body() createUserDto: CreateUserDto) {

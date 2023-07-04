@@ -5,6 +5,7 @@ import { TaskModule } from './task/task.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Task } from './task/entities/task.entity';
 import { UsersModule } from './users/users.module';
+import { LibroModule } from './libro/libro.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UsersModule } from './users/users.module';
       synchronize: true,
     }),
     UsersModule,
+    LibroModule,
   ],
   controllers: [AppController],
   providers: [AppService],

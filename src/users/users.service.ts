@@ -51,6 +51,7 @@ export class UsersService {
     //console.log(userFind);
     //return userFind;
   }
+
   private getJWToken(payload: {
     id: number;
     nombre: string;
@@ -107,8 +108,12 @@ export class UsersService {
     return user;
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     this.userRepository.delete(id);
-    return `This action removes a #${id} user`;
+    const task = await this.userRepository.findOne({ where: { id } });
+    if (!task) {
+      throw new BadRequestException('No se puede eliminar el usuario');
+    }
+    //return `This action removes a #${id} user`;
   }
 }
