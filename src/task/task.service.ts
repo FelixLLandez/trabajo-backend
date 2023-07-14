@@ -25,13 +25,28 @@ export class TaskService {
     });
     return tasks;
   }
+  async xuser(uid:number) {
+    const user = await this.userRepository.findOne({
+      where: { id:uid},
+      //: CreateTaskDto.userId
+    });
 
-  async create(createTaskDto: CreateTaskDto) {
+    const tasks = await this.taskRepository.find({
+      where: { user: user },
+    });
+    return tasks;
+  }
+
+  async create(createTaskDto: CreateTaskDto, userid:number) {
     //return 'This action adds a new task';
     const user = await this.userRepository.findOne({
-      where: { id: CreateTaskDto.id },
+      where: { id:userid },
+      // where: { id:CreateTaskDto.uId },
+      //: CreateTaskDto.userId
     });
-    console.log(user);
+    console.log("usuario creador")
+    console.log(user)
+    //console.log(CreateTaskDto.id);
     const task = this.taskRepository.create({ ...createTaskDto, user: user });
     await this.taskRepository.save(task);
     return task;
@@ -40,6 +55,13 @@ export class TaskService {
   findAll() {
     //return `This action returns all task`;
     const tasks = this.taskRepository.find();
+    return tasks;
+  }
+  findAllByUser(id:number) {
+    //return `This action returns all task`;
+    const tasks = this.taskRepository.find({
+     // where:{user:id}
+    });
     return tasks;
   }
 
@@ -54,6 +76,7 @@ export class TaskService {
     return task;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async update(id: number, updateTaskDto: UpdateTaskDto) {
     //return `This action updates a #${id} task`;
     await this.taskRepository.update(id, updateTaskDto);

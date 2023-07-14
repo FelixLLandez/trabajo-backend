@@ -13,7 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     ) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrkey: 'sword',
+            secretKey: 'secretword',
         });
     }
     async validate(payload: {
@@ -22,7 +22,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         apellidos: string;
     }): Promise<User> {
         const { id } = payload;
+        console.log("id")
+        console.log(id)
+        console.log("payload")
+        console.log(payload)
         const user = await this.userRepo.findOneBy({ id });
+        console.log("usuario")
+        console.log(user)
         if (!user) {
             throw new UnauthorizedException('Token No Valido');
         }

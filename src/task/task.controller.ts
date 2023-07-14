@@ -28,10 +28,14 @@ export class TaskController {
   buscar(@Query('importante') importante: number) {
     return this.taskService.buscar(importante);
   }
+  @Get('xuser')
+  xuser(@Query('usuario') id: number) {
+    return this.taskService.xuser(id);
+  }
 
   @Post('createTask')
-  create(@Body() createTaskDto: CreateTaskDto) {
-    return this.taskService.create(createTaskDto);
+  create(@Body() createTaskDto: CreateTaskDto, @Query('usuario') id: number) {
+    return this.taskService.create(createTaskDto, id);
   }
 
   @Get('allTasks')

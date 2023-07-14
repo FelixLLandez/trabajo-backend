@@ -8,5 +8,5 @@ export class CreateTaskDto {
   description: string;
   @IsNumber()
   important: number;
-  static id: number | FindOperator<number>;
+  static uId: number | FindOperator<number>;
 }

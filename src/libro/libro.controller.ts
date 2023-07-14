@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { LibroService } from './libro.service';
 import { CreateLibroDto } from './dto/create-libro.dto';
 import { UpdateLibroDto } from './dto/update-libro.dto';
@@ -15,24 +6,20 @@ import { UpdateLibroDto } from './dto/update-libro.dto';
 @Controller('libro')
 export class LibroController {
   constructor(private readonly libroService: LibroService) {}
-  @Get('search')
-  search(@Query('termino') termino: string) {
-    return this.libroService.search(termino);
+
+  @Get('buscar')
+  buscar(@Query('clas') clasificacion: string) {
+    return this.libroService.buscar(clasificacion);
   }
 
-  @Post('crear')
-  create(@Body() createLibroDto: CreateLibroDto) {
-    return this.libroService.create(createLibroDto);
+  @Post('createLibro')
+  create(@Body() createLibroDto: CreateLibroDto, @Query('autor') id: number) {
+    return this.libroService.create(createLibroDto, id);
   }
 
-  @Get()
+  @Get('allLibros')
   findAll() {
     return this.libroService.findAll();
-  }
-
-  @Get('clasificar')
-  clasi(@Param('clasificacion') clasificacion: string) {
-    return this.libroService.findOne(+clasificacion);
   }
 
   @Get(':id')

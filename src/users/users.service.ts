@@ -18,49 +18,6 @@ export class UsersService {
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwts: JwtService,
   ) {}
-
-  async login(user: loginDto) {
-    const { password, email } = user;
-    const userFind = await this.userRepository.findOne({
-      where: { email },
-      select: {
-        password: true,
-        edad: true,
-        email: true,
-        nombre: true,
-        apellidos: true,
-        sexo: true,
-        estado: true,
-      },
-    });
-    if (!userFind) {
-      throw new UnauthorizedException('Credentials not found');
-    }
-    if (!bcrypt.compareSync(password, userFind.password)) {
-      throw new UnauthorizedException('Credentials not found');
-    }
-    delete userFind.password;
-    return {
-      ...userFind,
-      token: this.getJWToken({
-        id: userFind.id,
-        nombre: userFind.nombre,
-        apellidos: userFind.apellidos,
-      }),
-    };
-    //console.log(userFind);
-    //return userFind;
-  }
-
-  private getJWToken(payload: {
-    id: number;
-    nombre: string;
-    apellidos: string;
-  }) {
-    const token = this.jwts.sign(payload);
-    return token;
-  }
-
   async create(createUserDto: CreateUserDto) {
     //return 'This action adds a new user';
     try {
@@ -108,12 +65,65 @@ export class UsersService {
     return user;
   }
 
-  async remove(id: number) {
+  remove(id: number) {
     this.userRepository.delete(id);
-    const task = await this.userRepository.findOne({ where: { id } });
-    if (!task) {
-      throw new BadRequestException('No se puede eliminar el usuario');
+    return //`This action removes a #${id} user`;
+  }
+
+  async login(user: loginDto) {
+    const { password, email } = user;
+    const userFind = await this.userRepository.findOne({
+      where: { email },
+      select: {
+        id:true,
+        password: true,
+        edad: true,
+        email: true,
+        nombre: true,
+        apellidos: true,
+        sexo: true,
+        estado: true,
+      },
+    });
+    if (!userFind) {
+      throw new UnauthorizedException('Credentials not found');
     }
-    //return `This action removes a #${id} user`;
+    if (!bcrypt.compareSync(password, userFind.password)) {
+      throw new UnauthorizedException('Credentials not found');
+    }
+    delete userFind.password;
+    console.log(userFind);
+    console.log(userFind.id);
+    return {
+      ...userFind,
+      token: this.getJWToken({
+        id: userFind.id,
+        nombre: userFind.nombre,
+        apellidos: userFind.apellidos,
+      }),
+    };
+    //return userFind;
+  }
+  private getJWToken(payload: {
+    id: number;
+    nombre: string;
+    apellidos: string;
+  }) {
+    console.log(payload)
+    const token = this.jwts.sign(payload);
+    console.log(token)
+
+    return token;
+  }
+
+  validaToken(token:any){
+    try{
+      // console.log(token)
+      // console.log(token.token)
+      this.jwts.verify(token.token, {secret:'secretword'});
+      return true
+    }catch(error){
+      throw new UnauthorizedException('Token no valido')
+    }
   }
 }
