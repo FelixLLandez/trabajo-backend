@@ -11,6 +11,8 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   password: string;
   @IsString()
   sexo: string;
+  @IsString()
+  telefono: string;
   @IsNumber()
   edad: number;
 }
