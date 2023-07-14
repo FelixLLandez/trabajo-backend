@@ -82,7 +82,7 @@ export class UsersService {
         nombre: true,
         apellidos: true,
         sexo: true,
-        estado: true,
+        activo: true,
       },
     });
     if (!userFind) {
