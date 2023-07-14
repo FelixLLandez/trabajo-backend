@@ -6,6 +6,8 @@ export class CreateTaskDto {
   title: string;
   @IsString()
   description: string;
+  @IsString()
+  direccion: string
   @IsNumber()
   precio: number;
   @IsNumber()

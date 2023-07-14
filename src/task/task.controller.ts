@@ -8,7 +8,7 @@ import {
   Delete,
   ValidationPipe,
   UsePipes,
-  Query,
+  Query
 } from '@nestjs/common';
 
 import { TaskService } from './task.service';
