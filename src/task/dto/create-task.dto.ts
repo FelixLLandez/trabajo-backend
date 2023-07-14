@@ -7,6 +7,8 @@ export class CreateTaskDto {
   @IsString()
   description: string;
   @IsNumber()
+  precio: number;
+  @IsNumber()
   important: number;
   static uId: number | FindOperator<number>;
 }

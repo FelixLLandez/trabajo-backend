@@ -12,6 +12,8 @@ export class Task {
   description: string;
   @Column('bool', { default: false })
   estate: boolean;
+  @Column('number')
+  precio: number;
   @Column()
   important: number;
   @ManyToOne(() => User, (u) => u.task)
