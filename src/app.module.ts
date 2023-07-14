@@ -19,7 +19,7 @@ import { AutorModule } from './autor/autor.module';
       port: 3306,
       username: 'root',
       //password: '',
-      database: 'proyecto',
+      database: 'trabajitos',
       autoLoadEntities: true,
       synchronize: true,
       // port: 5432,
