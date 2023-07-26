@@ -1,5 +1,5 @@
 import { User } from "src/users/entities/user.entity"
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToOne, OneToMany } from "typeorm"
 
 @Entity()
 export class Rol {
@@ -9,6 +9,6 @@ export class Rol {
     @Column()
     nombre: string
 
-    @OneToOne(() => User, (user) => user.rol) // specify inverse side as a second parameter
-    user: User
+    @OneToMany(() => User, (user) => user.rol)
+    user: User[]
 }

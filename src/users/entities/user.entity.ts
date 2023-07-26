@@ -1,7 +1,7 @@
 import { Direccion } from 'src/direccion/entities/direccion.entity';
 import { Rol } from 'src/rol/entities/rol.entity';
 import { Task } from 'src/task/entities/task.entity';
-import { Column, Entity, OneToMany, OneToOne, JoinColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne, JoinColumn, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 @Entity()
 
 export class User {
@@ -24,9 +24,8 @@ export class User {
   telefono: string;
   @Column('int', { nullable: true })
   edad: number;
-  @OneToOne(() => Rol, (rol) => rol.user) 
-  @JoinColumn()
-    rol: Rol
+  @ManyToOne(() => Rol, (rol) => rol.user, { nullable: false })
+  rol: Rol
   @OneToMany(() => Task, (t) => t.user)
   task: Task[];
   @OneToMany(() => Direccion, (direccion) => direccion.user)

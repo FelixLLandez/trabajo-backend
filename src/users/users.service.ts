@@ -11,21 +11,34 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { loginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { log } from 'console';
+import { Rol } from 'src/rol/entities/rol.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Rol) private rolRepository: Repository<Rol>,
     private jwts: JwtService,
   ) {}
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto, id: number) {
     //return 'This action adds a new user';
     try {
+      const rol = await this.rolRepository.findOne({
+        where: { id:id },
+        // where: { id:CreateTaskDto.uId },
+        //: CreateTaskDto.userId
+      });
       const { password, ...useData } = createUserDto;
+      console.log(useData);
+      
       const user = this.userRepository.create({
         ...useData,
         password: bcrypt.hashSync(password, 10),
+        rol: rol,
       });
+      console.log(user);
+      
       await this.userRepository.save(user);
       delete user.password;
       return { ...user };

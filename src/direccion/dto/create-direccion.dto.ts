@@ -9,5 +9,14 @@ export class CreateDireccionDto {
     @IsString()
     @IsNotEmpty()
     @MinLength(3)
-    nombre: string;
+    calle: string;
+    @IsString()
+    estado: string;
+    @IsString()
+    municipio: string;
+    @IsString()
+    localidad: string;
+    @IsNumber()
+    numero: string;
+
 }

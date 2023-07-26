@@ -10,5 +10,5 @@ export class CreateRolDto {
     @IsString()
   @IsNotEmpty()
   @MinLength(3)
-  calle: string;
+  nombre: string;
 }

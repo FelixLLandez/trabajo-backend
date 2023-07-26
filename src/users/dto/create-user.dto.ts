@@ -25,4 +25,6 @@ export class CreateUserDto {
   telefono: string;
   @IsNumber()
   edad: number;
+  //@IsNumber()
+  static rolId: number;
 }

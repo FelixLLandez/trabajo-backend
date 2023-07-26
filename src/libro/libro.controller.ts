@@ -13,7 +13,8 @@ export class LibroController {
   }
 
   @Post('createLibro')
-  create(@Body() createLibroDto: CreateLibroDto, @Query('autor') id: number) {
+  create(@Body() createLibroDto: CreateLibroDto, id:number) {
+  // create(@Body() createLibroDto: CreateLibroDto, @Query('autor') id: number) {
     return this.libroService.create(createLibroDto, id);
   }
 

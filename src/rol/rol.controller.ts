@@ -7,7 +7,7 @@ import { UpdateRolDto } from './dto/update-rol.dto';
 export class RolController {
   constructor(private readonly rolService: RolService) {}
 
-  @Post()
+  @Post('/create')
   create(@Body() createRolDto: CreateRolDto) {
     return this.rolService.create(createRolDto);
   }

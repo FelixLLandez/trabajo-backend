@@ -14,10 +14,10 @@ export class Direccion {
   municipio: string;
   @Column('text')
   localidad: string;
-  @Column('bool', { default: false })
+  @Column('bool', { default: true })
   activo: boolean;
   @Column()
   numero: number;
-  @ManyToOne(() => User, (user) => user.direccion)
+  @ManyToOne(() => User, (user) => user.direccion, { nullable: false })
   user: User;
 }
