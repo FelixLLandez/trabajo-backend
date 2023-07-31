@@ -17,6 +17,7 @@ export class CreateDireccionDto {
     @IsString()
     localidad: string;
     @IsNumber()
-    numero: string;
+    numero: number;
+    static dirId: number
 
 }

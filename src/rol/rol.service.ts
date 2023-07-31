@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateRolDto } from './dto/create-rol.dto';
 import { UpdateRolDto } from './dto/update-rol.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -27,18 +27,29 @@ export class RolService {
   }
 
   findAll() {
-    return `This action returns all rol`;
+    const roles = this.rolRepository.find();
+    return roles;
+    // return `This action returns all rol`;
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} rol`;
-  }
+    const rol = this.rolRepository.findOne({
+      where: { id },
+    });
+    if (!rol) {
+      throw new BadRequestException('rol no encontrado');
+    }
+    return rol;    }
 
-  update(id: number, updateRolDto: UpdateRolDto) {
-    return `This action updates a #${id} rol`;
-  }
+  async update(id: number, updateRolDto: UpdateRolDto) {
+    await this.rolRepository.update(id, updateRolDto);
+    const rol = this.rolRepository.findOne({ where: { id } });
+    if (!rol) {
+      throw new BadRequestException('No se puede actualizar');
+    }
+    return rol;  }
 
   remove(id: number) {
-    return `This action removes a #${id} rol`;
+    return  this.rolRepository.delete(id);
   }
 }

@@ -7,12 +7,12 @@ import { UpdateDireccionDto } from './dto/update-direccion.dto';
 export class DireccionController {
   constructor(private readonly direccionService: DireccionService) {}
 
-  @Post()
-  create(@Body() createDireccionDto: CreateDireccionDto) {
-    return this.direccionService.create(createDireccionDto);
+  @Post('/create')
+  create(@Body() createDireccionDto: CreateDireccionDto, userid:number) {
+    return this.direccionService.create(createDireccionDto, userid);
   }
 
-  @Get()
+  @Get('/allDir')
   findAll() {
     return this.direccionService.findAll();
   }
