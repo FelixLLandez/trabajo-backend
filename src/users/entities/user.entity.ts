@@ -1,3 +1,4 @@
+import { Anuncio } from 'src/anuncios/entities/anuncio.entity';
 import { Direccion } from 'src/direccion/entities/direccion.entity';
 import { Rol } from 'src/rol/entities/rol.entity';
 import { Task } from 'src/task/entities/task.entity';
@@ -28,6 +29,8 @@ export class User {
   rol: Rol
   @OneToMany(() => Task, (t) => t.user)
   task: Task[];
+  @OneToMany(() => Anuncio, (t) => t.user)
+  anuncio: Anuncio[];
   @OneToMany(() => Direccion, (direccion) => direccion.user)
   direccion: Direccion[];
 }

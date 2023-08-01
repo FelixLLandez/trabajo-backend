@@ -13,12 +13,14 @@ import { loginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { log } from 'console';
 import { Rol } from 'src/rol/entities/rol.entity';
+import { Direccion } from 'src/direccion/entities/direccion.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Rol) private rolRepository: Repository<Rol>,
+    @InjectRepository(Direccion) private direccionRepository: Repository<Direccion>,
     private jwts: JwtService,
   ) {}
   async create(createUserDto: CreateUserDto, id: number) {
