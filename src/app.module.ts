@@ -12,6 +12,7 @@ import { RolModule } from './rol/rol.module';
 import { DireccionModule } from './direccion/direccion.module';
 import { Direccion } from './direccion/entities/direccion.entity';
 import { Rol } from './rol/entities/rol.entity';
+import { AnunciosModule } from './anuncios/anuncios.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { Rol } from './rol/entities/rol.entity';
     AutorModule,
     RolModule,
     DireccionModule,
+    AnunciosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

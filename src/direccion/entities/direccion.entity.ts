@@ -1,5 +1,6 @@
+import { Anuncio } from 'src/anuncios/entities/anuncio.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, ManyToOne } from 'typeorm';
+import { Column, ManyToOne, OneToMany } from 'typeorm';
 import { PrimaryGeneratedColumn } from 'typeorm/decorator/columns/PrimaryGeneratedColumn';
 import { Entity } from 'typeorm/decorator/entity/Entity';
 @Entity()
@@ -20,4 +21,6 @@ export class Direccion {
   numero: number;
   @ManyToOne(() => User, (user) => user.direccion, { nullable: false })
   user: User;
+  @OneToMany(() => Anuncio, (anuncio) => anuncio.direccion)
+  anuncio: Anuncio;
 }
