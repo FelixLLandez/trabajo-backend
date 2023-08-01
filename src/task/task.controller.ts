@@ -35,8 +35,8 @@ export class TaskController {
   }
 
   @Post('createTask')
-  create(@Body() createTaskDto: CreateTaskDto, @Query('usuario') id: number) {
-    return this.taskService.create(createTaskDto, id);
+  create(@Body() createTaskDto: CreateTaskDto, direccionId:number, @Query('usuario') id: number) {
+    return this.taskService.create(createTaskDto, direccionId, id);
   }
 
   @Get('allTasks')

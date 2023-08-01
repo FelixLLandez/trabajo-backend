@@ -6,12 +6,14 @@ import { Task } from './entities/task.entity';
 import { Repository } from 'typeorm/repository/Repository';
 import { Like } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { Direccion } from 'src/direccion/entities/direccion.entity';
 
 @Injectable()
 export class TaskService {
   constructor(
     @InjectRepository(Task) private taskRepository: Repository<Task>,
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Direccion) private direccionRepository: Repository<Direccion>,
   ) {}
   async search(termino: string) {
     const tasks = await this.taskRepository.find({
@@ -37,17 +39,24 @@ export class TaskService {
     return tasks;
   }
 
-  async create(createTaskDto: CreateTaskDto, userid:number) {
+  async create(createTaskDto: CreateTaskDto, direccionId:number, userid:number) {
     //return 'This action adds a new task';
     const user = await this.userRepository.findOne({
       where: { id:userid },
       // where: { id:CreateTaskDto.uId },
       //: CreateTaskDto.userId
     });
+    const direccion = await this.direccionRepository.findOne({
+      where: { id:direccionId },
+      // where: { id:CreateTaskDto.uId },
+      //: CreateTaskDto.userId
+    });
     console.log("usuario creador")
     console.log(user)
+    console.log("direccion creador")
+    console.log(direccion)
     //console.log(CreateTaskDto.id);
-    const task = this.taskRepository.create({ ...createTaskDto, user: user });
+    const task = this.taskRepository.create({ ...createTaskDto, user: user, direccion:direccion });
     await this.taskRepository.save(task);
     return task;
   }
