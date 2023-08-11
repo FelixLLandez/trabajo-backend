@@ -13,6 +13,11 @@ export class AnunciosController {
     return this.anunciosService.create(createAnuncioDto, direccionId, id);
   }
 
+  @Get('xuser')
+  xuser(@Query('usuario') id: number) {
+    return this.anunciosService.xuser(id);
+  }
+
   @Get('allAnuncios')
   findAll() {
     return this.anunciosService.findAll();

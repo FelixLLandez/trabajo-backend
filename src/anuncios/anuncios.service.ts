@@ -49,6 +49,19 @@ export class AnunciosService {
     }
     return anuncio;  }
 
+    async xuser(uid:number) {
+      const user = await this.userRepository.findOne({
+        where: { id:uid},
+        //: CreateTaskDto.userId
+      });
+  
+      const anuncios = await this.anuncioRepository.find({
+        where: { user: user },
+      });
+      return anuncios;
+    }
+  
+
   async update(id: number, updateAnuncioDto: UpdateAnuncioDto) {
     await this.anuncioRepository.update(id, updateAnuncioDto);
     const anuncio = this.anuncioRepository.findOne({ where: { id } });
