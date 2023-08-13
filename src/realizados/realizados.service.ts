@@ -26,15 +26,28 @@ export class RealizadosService {
       // where: { id:CreateTaskDto.uId },
       //: CreateTaskDto.userId
     });
-    console.log("usuario creador")
+    console.log("usuario trabajador")
     console.log(user)
-    console.log("direccion creador")
+    console.log("anuncio realizado")
     console.log(anuncio)
     //console.log(CreateTaskDto.id);
     const realizado = this.realizadoRepository.create({ ...createRealizadoDto, user: user, anuncio:anuncio });
     await this.realizadoRepository.save(realizado);
     return anuncio;  }  
 
+
+    async xuser(uid:number) {
+      const user = await this.userRepository.findOne({
+        where: { id:uid},
+        //: CreateTaskDto.userId
+      });
+  
+      const realizados = await this.realizadoRepository.find({
+        where: { user: user },
+      });
+      return realizados;
+    }
+  
   findAll() {
     return `This action returns all realizados`;
   }
