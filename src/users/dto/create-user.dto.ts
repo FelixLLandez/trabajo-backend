@@ -23,8 +23,13 @@ export class CreateUserDto {
   sexo: string;
   @IsString()
   telefono: string;
+  @IsString()
+  calle: string;
+  @IsString()
+  estado: string;
+  @IsString()
+  municipio: string;
   @IsNumber()
   edad: number;
-  //@IsNumber()
-  static rolId: number;
+  rolId: number;
 }

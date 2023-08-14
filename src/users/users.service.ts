@@ -1,17 +1,17 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { And, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { loginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
-import { log } from 'console';
 import { Rol } from 'src/rol/entities/rol.entity';
 
 @Injectable()
@@ -20,46 +20,41 @@ export class UsersService {
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Rol) private rolRepository: Repository<Rol>,
     private jwts: JwtService,
-  ) {}
-  async create(createUserDto: CreateUserDto, id: number) {
-    //return 'This action adds a new user';
+  ) { }
+
+  async create(createUserDto: CreateUserDto) {
     try {
+      const { rolId, ...userData } = createUserDto;
+
       const rol = await this.rolRepository.findOne({
-        where: { id:id },
-        // where: { id:CreateTaskDto.uId },
-        //: CreateTaskDto.userId
+        where: { id: rolId },
       });
-      const { password, ...useData } = createUserDto;
-      console.log(useData);
-      
+
       const user = this.userRepository.create({
-        ...useData,
-        password: bcrypt.hashSync(password, 10),
+        ...userData,
+        password: bcrypt.hashSync(userData.password, 10),
         rol: rol,
       });
-      console.log(user);
-      
+
       await this.userRepository.save(user);
       delete user.password;
       return { ...user };
     } catch (error) {
       return error;
     }
-    //const user = this.userRepository.create(createUserDto);
-    //await this.userRepository.save(user);
-    //return user;
   }
 
+
   findAll() {
-    //return `This action returns all users`;
-    const users = this.userRepository.find();
+    const users = this.userRepository.find({
+      relations: ['rol'],
+    });
     return users;
   }
 
   async findOne(id: number) {
-    //return `This action returns a #${id} user`;
     const user = await this.userRepository.findOne({
-      relations: ['task'],
+      relations: ['task', 'rol'],
       where: { id },
     });
     if (!user) {
@@ -69,7 +64,6 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    //return `This action updates a #${id} user`;
     await this.userRepository.update(id, updateUserDto);
     const user = this.userRepository.findOne({ where: { id } });
     if (!user) {
@@ -80,15 +74,16 @@ export class UsersService {
 
   remove(id: number) {
     this.userRepository.delete(id);
-    return //`This action removes a #${id} user`;
+    return
   }
 
   async login(user: loginDto) {
     const { password, email } = user;
     const userFind = await this.userRepository.findOne({
       where: { email },
+      relations: ['rol'],
       select: {
-        id:true,
+        id: true,
         password: true,
         edad: true,
         email: true,
@@ -96,6 +91,10 @@ export class UsersService {
         apellidos: true,
         sexo: true,
         activo: true,
+        telefono: true,
+        calle: true,
+        estado: true,
+        municipio: true,
       },
     });
     if (!userFind) {
@@ -112,11 +111,11 @@ export class UsersService {
       token: this.getJWToken({
         id: userFind.id,
         nombre: userFind.nombre,
-        apellidos: userFind.apellidos,
+        apellidos: userFind.apellidos
       }),
     };
-    //return userFind;
   }
+
   private getJWToken(payload: {
     id: number;
     nombre: string;
@@ -129,14 +128,24 @@ export class UsersService {
     return token;
   }
 
-  validaToken(token:any){
-    try{
-      // console.log(token)
-      // console.log(token.token)
-      this.jwts.verify(token.token, {secret:'secretword'});
+  validaToken(token: any) {
+    try {
+      this.jwts.verify(token.token, { secret: 'secretword' });
       return true
-    }catch(error){
+    } catch (error) {
       throw new UnauthorizedException('Token no valido')
     }
   }
+
+  async getActivePostulantes(): Promise<User[]> {
+    const postulantes = await this.userRepository.find({
+      relations: ['rol'],
+      where: {
+        rol: { id: 3 },
+        activo: true
+      },
+    });
+    return postulantes;
+  }
+
 }

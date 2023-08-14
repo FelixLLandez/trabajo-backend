@@ -6,8 +6,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Task } from './task/entities/task.entity';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
-import { LibroModule } from './libro/libro.module';
-import { AutorModule } from './autor/autor.module';
 import { RolModule } from './rol/rol.module';
 import { DireccionModule } from './direccion/direccion.module';
 import { Direccion } from './direccion/entities/direccion.entity';
@@ -31,12 +29,10 @@ import { Rol } from './rol/entities/rol.entity';
       // password: 'Melh180899',
     }),
     UsersModule,
-    LibroModule,
-    AutorModule,
     RolModule,
-    DireccionModule,
+    DireccionModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

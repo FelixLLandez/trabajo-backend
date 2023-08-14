@@ -10,24 +10,15 @@ import { Repository } from 'typeorm/repository/Repository';
 export class RolService {
   constructor(
     @InjectRepository(Rol) private rolRepository: Repository<Rol>,
-    // @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
   async create(createRolDto: CreateRolDto) {
-    // const user = await this.rolRepository.findOne({
-    //   where: { id:userid },
-    //   // where: { id:CreateTaskDto.uId },
-    //   //: CreateTaskDto.userId
-    //  });
-    // console.log("usuario creador")
-    // console.log(user)
-    //console.log(CreateTaskDto.id);
     const rol = this.rolRepository.create({ ...createRolDto });
     await this.rolRepository.save(rol);
     return rol;  
   }
 
-  findAll() {
-    return `This action returns all rol`;
+  async findAll(): Promise<Rol[]> {
+    return this.rolRepository.find();
   }
 
   findOne(id: number) {
