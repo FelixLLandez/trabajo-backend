@@ -14,53 +14,63 @@ export class AnunciosService {
   constructor(
     @InjectRepository(Anuncio) private anuncioRepository: Repository<Anuncio>,
     @InjectRepository(User) private userRepository: Repository<User>,
-    @InjectRepository(Direccion) private direccionRepository: Repository<Direccion>,
-  ){}
-  async create(createAnuncioDto: CreateAnuncioDto, direccionId:number, userid:number) {
+    @InjectRepository(Direccion)
+    private direccionRepository: Repository<Direccion>,
+  ) {}
+  async create(createAnuncioDto: CreateAnuncioDto, userid: number) {
     const user = await this.userRepository.findOne({
-      where: { id:userid },
+      where: { id: userid },
       // where: { id:CreateTaskDto.uId },
       //: CreateTaskDto.userId
     });
     const direccion = await this.direccionRepository.findOne({
-      where: { id:direccionId },
+      where: { id: createAnuncioDto.direccionId },
       // where: { id:CreateTaskDto.uId },
       //: CreateTaskDto.userId
     });
-    console.log("usuario creador")
-    console.log(user)
-    console.log("direccion creador")
-    console.log(direccion)
+    console.log('usuario creador');
+    console.log(user);
+    console.log('direccion creador');
+    console.log(direccion);
     //console.log(CreateTaskDto.id);
-    const anuncio = this.anuncioRepository.create({ ...createAnuncioDto, user: user, direccion:direccion });
+    const anuncio = this.anuncioRepository.create({
+      ...createAnuncioDto,
+      user: user,
+      direccion: direccion,
+    });
     await this.anuncioRepository.save(anuncio);
-    return anuncio;  }
+    return anuncio;
+  }
 
   findAll() {
-    const anuncios = this.anuncioRepository.find();
-    return anuncios;  }
+    const anuncios = this.anuncioRepository.find({
+      relations: ['user', 'direccion', 'postulacion'],
+    });
+    return anuncios;
+  }
 
   findOne(id: number) {
     const anuncio = this.anuncioRepository.findOne({
+      relations: ['user', 'direccion', 'postulacion'],
       where: { id },
     });
     if (!anuncio) {
-      throw new BadRequestException('Task no encontrado');
+      throw new BadRequestException('Anuncio no encontrado');
     }
-    return anuncio;  }
+    return anuncio;
+  }
 
-    async xuser(uid:number) {
-      const user = await this.userRepository.findOne({
-        where: { id:uid},
-        //: CreateTaskDto.userId
-      });
-  
-      const anuncios = await this.anuncioRepository.find({
-        where: { user: user },
-      });
-      return anuncios;
-    }
-  
+  async xuser(uid: number) {
+    const user = await this.userRepository.findOne({
+      where: { id: uid },
+      //: CreateTaskDto.userId
+    });
+
+    const anuncios = await this.anuncioRepository.find({
+      where: { user: user },
+    });
+    return anuncios;
+  }
 
   async update(id: number, updateAnuncioDto: UpdateAnuncioDto) {
     await this.anuncioRepository.update(id, updateAnuncioDto);
@@ -68,7 +78,8 @@ export class AnunciosService {
     if (!anuncio) {
       throw new BadRequestException('No se puede actualizar');
     }
-    return anuncio;  }
+    return anuncio;
+  }
 
   remove(id: number) {
     this.anuncioRepository.delete(id);

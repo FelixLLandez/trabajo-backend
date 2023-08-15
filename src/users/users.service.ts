@@ -74,7 +74,7 @@ export class UsersService {
   findAll() {
     //return `This action returns all users`;
     const users = this.userRepository.find({
-      relations: ['anuncio', 'realizado', 'rol'],
+      relations: ['anuncio', 'realizado', 'rol', 'postulacion'],
     });
     return users;
   }
@@ -92,13 +92,21 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    //return `This action updates a #${id} user`;
-    await this.userRepository.update(id, updateUserDto);
+    const { password, ...useData } = updateUserDto;
+    console.log(useData);
+    
+    await this.userRepository.update(id,{
+      ...useData,
+      password: bcrypt.hashSync(password, 10),
+    });
+    //console.log(user);
+        //await this.userRepository.update(id, updateUserDto);
     const user = this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new BadRequestException('No se puede actualizar');
     }
     return user;
+    
   }
 
   remove(id: number) {

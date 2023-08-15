@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { PostulacionesService } from './postulaciones.service';
 import { CreatePostulacioneDto } from './dto/create-postulacione.dto';
 import { UpdatePostulacioneDto } from './dto/update-postulacione.dto';
@@ -7,12 +16,25 @@ import { UpdatePostulacioneDto } from './dto/update-postulacione.dto';
 export class PostulacionesController {
   constructor(private readonly postulacionesService: PostulacionesService) {}
 
-  @Post()
-  create(@Body() createPostulacioneDto: CreatePostulacioneDto) {
-    return this.postulacionesService.create(createPostulacioneDto);
+  @Post('createPostulacion')
+  create(
+    @Body() createPostulacioneDto: CreatePostulacioneDto,
+    @Query('usuario') id: number,
+  ) {
+    return this.postulacionesService.create(createPostulacioneDto, id);
   }
 
-  @Get()
+  @Get('xuser')
+  xuser(@Query('usuario') id: number) {
+    return this.postulacionesService.xuser(id);
+  }
+
+  @Get('xanuncio')
+  xanuncio(@Query('anuncio') id: number) {
+    return this.postulacionesService.xanuncio(id);
+  }
+
+  @Get('allPostulaciones')
   findAll() {
     return this.postulacionesService.findAll();
   }
@@ -23,7 +45,10 @@ export class PostulacionesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostulacioneDto: UpdatePostulacioneDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updatePostulacioneDto: UpdatePostulacioneDto,
+  ) {
     return this.postulacionesService.update(+id, updatePostulacioneDto);
   }
 

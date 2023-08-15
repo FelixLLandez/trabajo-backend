@@ -16,7 +16,8 @@ export class DireccionService {
 
   async create(createDireccionDto: CreateDireccionDto, userid:number) {
     const user = await this.userRepository.findOne({
-      where: { id:userid },
+      relations: ['user'],
+      where: { id:createDireccionDto.userId },
       // where: { id:CreateTaskDto.uId },
       //: CreateTaskDto.userId
     });
@@ -43,7 +44,9 @@ export class DireccionService {
 
 
   findAll() {
-    const direcciones = this.direccionRepository.find();
+    const direcciones = this.direccionRepository.find({
+      relations: ['user'],
+    });
     return direcciones;
     // return `This action returns all direccion`;
   }
