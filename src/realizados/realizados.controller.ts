@@ -8,8 +8,8 @@ export class RealizadosController {
   constructor(private readonly realizadosService: RealizadosService) {}
 
   @Post('createRealizado')
-  create(@Body() createRealizadoDto: CreateRealizadoDto, anuncioId:number, @Query('usuario') id: number) {
-    return this.realizadosService.create(createRealizadoDto, anuncioId, id);
+  create(@Body() createRealizadoDto: CreateRealizadoDto, @Query('usuario') id: number) {
+    return this.realizadosService.create(createRealizadoDto, id);
   }
 
   @Get('xuser')

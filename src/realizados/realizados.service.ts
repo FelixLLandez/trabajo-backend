@@ -15,9 +15,9 @@ export class RealizadosService {
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Realizado) private realizadoRepository: Repository<Realizado>,
   ){}
-  async create(createRealizadoDto: CreateRealizadoDto, anuncioId:number, userid:number) {
+  async create(createRealizadoDto: CreateRealizadoDto, userid:number) {
     const user = await this.userRepository.findOne({
-      where: { id:createRealizadoDto.uId },
+      where: { id:userid },
       // where: { id:CreateTaskDto.uId },
       //: CreateTaskDto.userId
     });
@@ -49,7 +49,10 @@ export class RealizadosService {
     }
   
   findAll() {
-    return `This action returns all realizados`;
+    const realizados = this.realizadoRepository.find({
+    relations: ['user', 'anuncio'],
+  });
+  return realizados;
   }
 
   findOne(id: number) {

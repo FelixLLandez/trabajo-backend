@@ -9,8 +9,8 @@ export class AnunciosController {
 
 
   @Post('createAnuncio')
-  create(@Body() createAnuncioDto: CreateAnuncioDto, direccionId:number, @Query('usuario') id: number) {
-    return this.anunciosService.create(createAnuncioDto, direccionId, id);
+  create(@Body() createAnuncioDto: CreateAnuncioDto, @Query('usuario') id: number) {
+    return this.anunciosService.create(createAnuncioDto, id);
   }
 
   @Get('xuser')

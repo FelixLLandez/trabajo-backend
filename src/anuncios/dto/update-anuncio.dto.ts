@@ -5,5 +5,5 @@ import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class UpdateAnuncioDto extends PartialType(CreateAnuncioDto) {
 
-    static realizadoId: number;
+    realizado: boolean;
 }
