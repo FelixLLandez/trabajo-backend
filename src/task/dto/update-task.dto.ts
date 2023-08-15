@@ -11,4 +11,6 @@ export class UpdateTaskDto extends PartialType(CreateTaskDto) {
   descripcion: string;
   @IsNumber()
   precio: number;
+  @IsNumber()
+  estadoTrabajoId: number;
 }

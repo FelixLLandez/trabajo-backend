@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { Rol } from 'src/rol/entities/rol.entity';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   controllers: [UsersController],
@@ -17,6 +18,9 @@ import { Rol } from 'src/rol/entities/rol.entity';
     JwtModule.register({
       secret: 'secretword',
       signOptions: { expiresIn: '1h' },
+    }),
+    MulterModule.register({
+      dest: './uploads/fotoUsuario', // Directorio donde se guardarán los archivos subidos
     }),
   ],
 })

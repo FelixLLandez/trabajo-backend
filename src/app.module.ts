@@ -7,14 +7,14 @@ import { Task } from './task/entities/task.entity';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
 import { RolModule } from './rol/rol.module';
-import { DireccionModule } from './direccion/direccion.module';
-import { Direccion } from './direccion/entities/direccion.entity';
 import { Rol } from './rol/entities/rol.entity';
+import { EstadosTrabajoModule } from './estados-trabajo/estados-trabajo.module';
+import { EstadosTrabajo } from './estados-trabajo/entities/estados-trabajo.entity';
 
 @Module({
   imports: [
     TaskModule,
-    TypeOrmModule.forFeature([Task, User, Rol, Direccion]),
+    TypeOrmModule.forFeature([Task, User, Rol, EstadosTrabajo]),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -30,7 +30,7 @@ import { Rol } from './rol/entities/rol.entity';
     }),
     UsersModule,
     RolModule,
-    DireccionModule
+    EstadosTrabajoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

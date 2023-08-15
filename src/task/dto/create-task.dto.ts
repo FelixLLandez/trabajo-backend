@@ -10,5 +10,6 @@ export class CreateTaskDto {
   descripcion: string;
   @IsNumber()
   precio: number;
+
   static uId: number | FindOperator<number>;
 }

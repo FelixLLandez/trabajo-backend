@@ -1,5 +1,6 @@
+import { EstadosTrabajo } from 'src/estados-trabajo/entities/estados-trabajo.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, ManyToMany, ManyToOne } from 'typeorm';
+import { Column, CreateDateColumn, ManyToMany, ManyToOne } from 'typeorm';
 import { PrimaryGeneratedColumn } from 'typeorm/decorator/columns/PrimaryGeneratedColumn';
 import { Entity } from 'typeorm/decorator/entity/Entity';
 @Entity()
@@ -16,10 +17,17 @@ export class Task {
   estate: boolean;
   @Column()
   precio: number;
-  @Column('text')
-  estado: string;
+  @CreateDateColumn()
+  fechaTrabajoRegistro: Date;
+  @Column({ nullable: true }) 
+  estadoTrabajoId: number;
+  @Column({ nullable: true }) 
+  userId: number;
 
   @ManyToOne(() => User, (u) => u.task)
   user: User;
+
+  @ManyToOne(() => EstadosTrabajo, estadoTrabajo => estadoTrabajo.trabajos)
+  estadoTrabajo: EstadosTrabajo; 
 
 }

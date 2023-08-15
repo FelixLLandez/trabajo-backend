@@ -6,19 +6,23 @@ import { Task } from './entities/task.entity';
 import { Repository } from 'typeorm/repository/Repository';
 import { Like } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { EstadosTrabajo } from 'src/estados-trabajo/entities/estados-trabajo.entity';
 
 @Injectable()
 export class TaskService {
   constructor(
     @InjectRepository(Task) private trabajosRepository: Repository<Task>,
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(EstadosTrabajo) private estadosTrabajoRepository: Repository<EstadosTrabajo>,
   ) { }
+
   async search(termino: string) {
     const tasks = await this.trabajosRepository.find({
       where: { nombre: Like(`%${termino}%`) },
     });
     return tasks;
   }
+
   async buscar(precio: number) {
     const tasks = await this.trabajosRepository.find({
       where: { precio: precio },
@@ -41,31 +45,39 @@ export class TaskService {
     const user = await this.userRepository.findOne({
       where: { id: userid },
     });
-    const task = this.trabajosRepository.create({ ...createTaskDto, user: user });
+    const estadoDisponible = await this.estadosTrabajoRepository.findOne({ where: { nombre: 'Disponible' } });
+    const task = this.trabajosRepository.create({ ...createTaskDto, user, estadoTrabajo: estadoDisponible });
+    user.fecharegistro = new Date();
     await this.trabajosRepository.save(task);
     return task;
   }
+
 
   findAll() {
     const tasks = this.trabajosRepository.find();
     return tasks;
   }
+
   findAllByUser(id: number) {
     const tasks = this.trabajosRepository.find({
     });
     return tasks;
   }
 
-  findOne(id: number) {
-    const task = this.trabajosRepository.findOne({
+  async findOne(id: number) {
+    const task = await this.trabajosRepository.findOne({
       where: { id },
+      relations: ['estadoTrabajo'], // Cargar la relación estadoTrabajo
+      select: ['id', 'nombre', 'direccion', 'descripcion', 'estate', 'precio', 'fechaTrabajoRegistro', 'userId'], 
     });
+    
     if (!task) {
       throw new BadRequestException('Task no encontrado');
     }
+  
     return task;
   }
-
+  
   async update(id: number, updateTaskDto: UpdateTaskDto) {
     await this.trabajosRepository.update(id, updateTaskDto);
     const task = this.trabajosRepository.findOne({ where: { id } });
@@ -80,8 +92,9 @@ export class TaskService {
     if (!task) {
       return false;
     }
-
     task.estate = false;
+    const estadoDesactivado = await this.estadosTrabajoRepository.findOne({ where: { nombre: 'Desactivado' } });
+    task.estadoTrabajo = estadoDesactivado;
     await this.trabajosRepository.save(task);
     return true;
   }
@@ -93,6 +106,9 @@ export class TaskService {
     }
 
     task.estate = true;
+    const estadoDisponible = await this.estadosTrabajoRepository.findOne({ where: { nombre: 'Disponible' } });
+    task.estadoTrabajo = estadoDisponible;
+
     await this.trabajosRepository.save(task);
     return true;
   }
