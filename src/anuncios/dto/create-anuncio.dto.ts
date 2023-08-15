@@ -7,8 +7,8 @@ export class CreateAnuncioDto {
   @IsString()
   description: string;
 //   @IsString()
-  static direccionId: number
+  direccionId: number
   @IsNumber()
   precio: number;
-  static uId: number | FindOperator<number>;
+  uId: number | FindOperator<number>;
 }

@@ -12,10 +12,10 @@ export class RealizadosController {
     return this.realizadosService.create(createRealizadoDto, anuncioId, id);
   }
 
-  // @Get('xuser')
-  // xuser(@Query('usuario') id: number) {
-  //   return this.realizadosService.xuser(id);
-  // }
+  @Get('xuser')
+  xuser(@Query('usuario') id: number) {
+    return this.realizadosService.xuser(id);
+  }
 
   @Get('allRealizados')
   findAll() {

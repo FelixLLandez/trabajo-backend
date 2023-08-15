@@ -18,6 +18,6 @@ export class CreateDireccionDto {
     localidad: string;
     @IsNumber()
     numero: number;
-    static dirId: number
+    userId: number
 
 }

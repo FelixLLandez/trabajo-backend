@@ -16,7 +16,7 @@ export class DireccionService {
 
   async create(createDireccionDto: CreateDireccionDto, userid:number) {
     const user = await this.userRepository.findOne({
-      where: { id:userid },
+      where: { id:createDireccionDto.userId },
       // where: { id:CreateTaskDto.uId },
       //: CreateTaskDto.userId
     });

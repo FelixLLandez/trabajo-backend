@@ -17,12 +17,12 @@ export class RealizadosService {
   ){}
   async create(createRealizadoDto: CreateRealizadoDto, anuncioId:number, userid:number) {
     const user = await this.userRepository.findOne({
-      where: { id:userid },
+      where: { id:createRealizadoDto.uId },
       // where: { id:CreateTaskDto.uId },
       //: CreateTaskDto.userId
     });
     const anuncio = await this.anuncioRepository.findOne({
-      where: { id:anuncioId },
+      where: { id:createRealizadoDto.anuncioId },
       // where: { id:CreateTaskDto.uId },
       //: CreateTaskDto.userId
     });
