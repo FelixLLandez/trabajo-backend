@@ -9,8 +9,8 @@ import {
   UsePipes,
   ValidationPipe,
   UseInterceptors,
-  Put,
   UploadedFile,
+  Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -21,7 +21,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 @Controller('users')
 @UsePipes(new ValidationPipe())
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   @Put(':id/fotoPerfil')
   @UseInterceptors(FileInterceptor('fotoPerfil'))// 'fotoPerfil' es el nombre del campo en el formulario
@@ -33,15 +33,14 @@ export class UsersController {
   }
 
   @Post('register')
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  create(@Body() createUserDto: CreateUserDto, rolId: number) {
+    return this.usersService.create(createUserDto, createUserDto.rolId);
   }
 
   @Post('login')
   login(@Body() user: loginDto) {
     return this.usersService.login(user);
   }
-
   @Post('validaToken')
   validaToken(@Body() token: any) {
     return this.usersService.validaToken(token);
@@ -52,24 +51,9 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get('postulantesActivos')
-  async getPostulanteRoles() {
-    return this.usersService.getActivePostulantes();
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
-  }
-
-  @Put(':id/fotoPerfil')
-  @UseInterceptors(FileInterceptor('fotoPerfil'))
-  async uploadProfileImage(@Param('id') id: number, @UploadedFile() file: any) {
-    console.log('Received request to update profile image for user with ID:', id);
-    console.log('Uploaded file:', file);
-
-    const updatedUser = await this.usersService.updateProfileImage(id, file.filename);
-    return updatedUser;
   }
 
   @Patch(':id')
@@ -81,5 +65,4 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }
-
 }

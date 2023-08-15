@@ -10,11 +10,20 @@ import { Repository } from 'typeorm/repository/Repository';
 export class RolService {
   constructor(
     @InjectRepository(Rol) private rolRepository: Repository<Rol>,
-  ) { }
+    // @InjectRepository(User) private userRepository: Repository<User>,
+  ) {}
   async create(createRolDto: CreateRolDto) {
+    // const user = await this.rolRepository.findOne({
+    //   where: { id:userid },
+    //   // where: { id:CreateTaskDto.uId },
+    //   //: CreateTaskDto.userId
+    //  });
+    // console.log("usuario creador")
+    // console.log(user)
+    //console.log(CreateTaskDto.id);
     const rol = this.rolRepository.create({ ...createRolDto });
     await this.rolRepository.save(rol);
-    return rol;
+    return rol;  
   }
 
   findAll() {
@@ -30,8 +39,7 @@ export class RolService {
     if (!rol) {
       throw new BadRequestException('rol no encontrado');
     }
-    return rol;
-  }
+    return rol;    }
 
   async update(id: number, updateRolDto: UpdateRolDto) {
     await this.rolRepository.update(id, updateRolDto);
@@ -39,10 +47,9 @@ export class RolService {
     if (!rol) {
       throw new BadRequestException('No se puede actualizar');
     }
-    return rol;
-  }
+    return rol;  }
 
   remove(id: number) {
-    return this.rolRepository.delete(id);
+    return  this.rolRepository.delete(id);
   }
 }

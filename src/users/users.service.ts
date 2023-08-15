@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -9,10 +8,11 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { And, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { loginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { log } from 'console';
 import { Rol } from 'src/rol/entities/rol.entity';
 import { Direccion } from 'src/direccion/entities/direccion.entity';
 
@@ -23,31 +23,40 @@ export class UsersService {
     @InjectRepository(Rol) private rolRepository: Repository<Rol>,
     @InjectRepository(Direccion) private direccionRepository: Repository<Direccion>,
     private jwts: JwtService,
-  ) { }
-
-  async create(createUserDto: CreateUserDto) {
+  ) {}
+  async create(createUserDto: CreateUserDto, id: number) {
+    //return 'This action adds a new user';
+    console.log(id);
+    console.log(createUserDto);
+    // console.log(CreateUserDto.rolId);
+    
     try {
-      const { rolId, ...userData } = createUserDto;
-
       const rol = await this.rolRepository.findOne({
-        where: { id: rolId },
+        where: { id:createUserDto.rolId },
+        // where: { id:CreateTaskDto.uId },
+        //: CreateTaskDto.userId
       });
-
+      console.log(rol);
+      
+      const { password, ...useData } = createUserDto;
+      console.log(useData);
+      
       const user = this.userRepository.create({
-        ...userData,
-        password: bcrypt.hashSync(userData.password, 10),
+        ...useData,
+        password: bcrypt.hashSync(password, 10),
         rol: rol,
       });
-
-      user.fecharegistro = new Date();
       console.log(user);
-
+      
       await this.userRepository.save(user);
       delete user.password;
       return { ...user };
     } catch (error) {
       return error;
     }
+    //const user = this.userRepository.create(createUserDto);
+    //await this.userRepository.save(user);
+    //return user;
   }
 
   async updateProfileImage(id: number, imageName: string): Promise<User> {
@@ -63,15 +72,17 @@ export class UsersService {
   }
 
   findAll() {
+    //return `This action returns all users`;
     const users = this.userRepository.find({
-      relations: ['rol'],
+      relations: ['anuncio', 'realizado', 'rol', 'postulacion'],
     });
     return users;
   }
 
   async findOne(id: number) {
+    //return `This action returns a #${id} user`;
     const user = await this.userRepository.findOne({
-      relations: ['task', 'rol'],
+      relations: ['anuncio', 'realizado', 'rol'],
       where: { id },
     });
     if (!user) {
@@ -80,18 +91,27 @@ export class UsersService {
     return user;
   }
 
-  /*async update(id: number, updateUserDto: UpdateUserDto) {
-    await this.userRepository.update(id, updateUserDto);
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const { password, ...useData } = updateUserDto;
+    console.log(useData);
+    
+    await this.userRepository.update(id,{
+      ...useData,
+      password: bcrypt.hashSync(password, 10),
+    });
+    //console.log(user);
+        //await this.userRepository.update(id, updateUserDto);
     const user = this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new BadRequestException('No se puede actualizar');
     }
     return user;
-  }*/
+    
+  }
 
   remove(id: number) {
     this.userRepository.delete(id);
-    return
+    return //`This action removes a #${id} user`;
   }
 
   async login(user: loginDto) {
@@ -99,9 +119,8 @@ export class UsersService {
     const userFind = await this.userRepository.findOne({
       relations: ['rol'],
       where: { email },
-      relations: ['rol'],
       select: {
-        id: true,
+        id:true,
         password: true,
         edad: true,
         email: true,
@@ -109,11 +128,7 @@ export class UsersService {
         apellidos: true,
         sexo: true,
         activo: true,
-        telefono: true,
-        calle: true,
-        estado: true,
-        municipio: true,
-        fecharegistro: true,
+        // rolId: true,
       },
     });
     console.log(userFind);
@@ -133,12 +148,12 @@ export class UsersService {
       token: this.getJWToken({
         id: userFind.id,
         nombre: userFind.nombre,
-        apellidos: userFind.apellidos
+        apellidos: userFind.apellidos,
       }),
     
     };
+    //return userFind;
   }
-
   private getJWToken(payload: {
     id: number;
     nombre: string;
@@ -151,66 +166,14 @@ export class UsersService {
     return token;
   }
 
-  validaToken(token: any) {
-    try {
-      this.jwts.verify(token.token, { secret: 'secretword' });
+  validaToken(token:any){
+    try{
+      // console.log(token)
+      // console.log(token.token)
+      this.jwts.verify(token.token, {secret:'secretword'});
       return true
-    } catch (error) {
+    }catch(error){
       throw new UnauthorizedException('Token no valido')
     }
   }
-
-  async getActivePostulantes(): Promise<User[]> {
-    const postulantes = await this.userRepository.find({
-      relations: ['rol'],
-      where: {
-        rol: { id: 3 },
-        activo: true
-      },
-    });
-    return postulantes;
-  }
-
-  async updateProfileImage(id: number, imageName: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id } });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    user.fotoPerfil = imageName;
-    console.log(user);
-
-    return this.userRepository.save(user);
-  }
-
-  /*async update(id: number, updateUserDto: UpdateUserDto) {
-    const { password, ...useData } = updateUserDto;
-    console.log(useData);
-
-    await this.userRepository.update(id, {
-      ...useData,
-      password: bcrypt.hashSync(password, 10),
-    });
-    const user = this.userRepository.findOne({ where: { id } });
-    if (!user) {
-      throw new BadRequestException('No se puede actualizar');
-    }
-    return user;
-
-  }*///funcion de sivelli
-
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    const { password, ...userData } = updateUserDto;
-  
-    // se elimina la actualización de la contraseña
-    await this.userRepository.update(id, userData);
-  
-    const user = this.userRepository.findOne({ where: { id } });
-    if (!user) {
-      throw new BadRequestException('No se puede actualizar');
-    }
-    return user;
-  }
-  
-
 }

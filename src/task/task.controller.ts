@@ -14,10 +14,10 @@ import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 
-@Controller('trabajos')
+@Controller('task')
 @UsePipes(new ValidationPipe())
 export class TaskController {
-  constructor(private readonly taskService: TaskService) { }
+  constructor(private readonly taskService: TaskService) {}
 
   @Get('search')
   search(@Query('termino') termino: string) {
@@ -25,20 +25,20 @@ export class TaskController {
   }
 
   @Get('buscar')
-  buscar(@Query('precio') precio: number) {
-    return this.taskService.buscar(precio);
+  buscar(@Query('importante') importante: number) {
+    return this.taskService.buscar(importante);
   }
   @Get('xuser')
   xuser(@Query('usuario') id: number) {
     return this.taskService.xuser(id);
   }
 
-  @Post('crearTrabajo')
+  @Post('createTask')
   create(@Body() createTaskDto: CreateTaskDto, @Query('usuario') id: number) {
     return this.taskService.create(createTaskDto, id);
   }
 
-  @Get('allTrabajos')
+  @Get('allTasks')
   findAll() {
     return this.taskService.findAll();
   }
@@ -53,24 +53,8 @@ export class TaskController {
     return this.taskService.update(+id, updateTaskDto);
   }
 
-  @Patch('desactivar_trabajo/:id')
-  async desactivarT(@Param('id') id: number) {
-    const success = await this.taskService.desactivar_trabajo(id);
-    if (success) {
-      return { message: 'Trabajo desactivado correctamente' };
-    } else {
-      return { message: 'No se pudo desactivar el trabajo. Trabajo no encontrado.' };
-    }
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.taskService.remove(+id);
   }
-
-  @Patch('activar_trabajo/:id')
-  async activarT(@Param('id') id: number) {
-    const success = await this.taskService.activar_trabajo(id);
-    if (success) {
-      return { message: 'Trabajo activado correctamente' };
-    } else {
-      return { message: 'No se pudo activar el trabajo. Trabajo no encontrado.' };
-    }
-  }
-
 }

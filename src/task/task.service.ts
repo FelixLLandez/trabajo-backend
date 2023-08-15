@@ -6,111 +6,89 @@ import { Task } from './entities/task.entity';
 import { Repository } from 'typeorm/repository/Repository';
 import { Like } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
-import { EstadosTrabajo } from 'src/estados-trabajo/entities/estados-trabajo.entity';
 
 @Injectable()
 export class TaskService {
   constructor(
-    @InjectRepository(Task) private trabajosRepository: Repository<Task>,
+    @InjectRepository(Task) private taskRepository: Repository<Task>,
     @InjectRepository(User) private userRepository: Repository<User>,
-    @InjectRepository(EstadosTrabajo) private estadosTrabajoRepository: Repository<EstadosTrabajo>,
-  ) { }
-
+  ) {}
   async search(termino: string) {
-    const tasks = await this.trabajosRepository.find({
-      where: { nombre: Like(`%${termino}%`) },
+    const tasks = await this.taskRepository.find({
+      where: { title: Like(`%${termino}%`) },
     });
     return tasks;
   }
-
-  async buscar(precio: number) {
-    const tasks = await this.trabajosRepository.find({
-      where: { precio: precio },
+  async buscar(importante: number) {
+    const tasks = await this.taskRepository.find({
+      where: { important: importante },
     });
     return tasks;
   }
-
-  async xuser(uid: number) {
+  async xuser(uid:number) {
     const user = await this.userRepository.findOne({
-      where: { id: uid },
+      where: { id:uid},
+      //: CreateTaskDto.userId
     });
 
-    const tasks = await this.trabajosRepository.find({
+    const tasks = await this.taskRepository.find({
       where: { user: user },
     });
     return tasks;
   }
 
-  async create(createTaskDto: CreateTaskDto, userid: number) {
+  async create(createTaskDto: CreateTaskDto, userid:number) {
+    //return 'This action adds a new task';
     const user = await this.userRepository.findOne({
-      where: { id: userid },
+      where: { id:userid },
+      // where: { id:CreateTaskDto.uId },
+      //: CreateTaskDto.userId
     });
-    const estadoDisponible = await this.estadosTrabajoRepository.findOne({ where: { nombre: 'Disponible' } });
-    const task = this.trabajosRepository.create({ ...createTaskDto, user, estadoTrabajo: estadoDisponible });
-    user.fecharegistro = new Date();
-    await this.trabajosRepository.save(task);
+    console.log("usuario creador")
+    console.log(user)
+    //console.log(CreateTaskDto.id);
+    const task = this.taskRepository.create({ ...createTaskDto, user: user });
+    await this.taskRepository.save(task);
     return task;
   }
 
-
   findAll() {
-    const tasks = this.trabajosRepository.find();
+    //return `This action returns all task`;
+    const tasks = this.taskRepository.find();
     return tasks;
   }
-
-  findAllByUser(id: number) {
-    const tasks = this.trabajosRepository.find({
+  findAllByUser(id:number) {
+    //return `This action returns all task`;
+    const tasks = this.taskRepository.find({
+     // where:{user:id}
     });
     return tasks;
   }
 
-  async findOne(id: number) {
-    const task = await this.trabajosRepository.findOne({
+  findOne(id: number) {
+    //return `This action returns a #${id} task`;
+    const task = this.taskRepository.findOne({
       where: { id },
-      relations: ['estadoTrabajo'], // Cargar la relación estadoTrabajo
-      select: ['id', 'nombre', 'direccion', 'descripcion', 'estate', 'precio', 'fechaTrabajoRegistro', 'userId'], 
     });
-    
     if (!task) {
       throw new BadRequestException('Task no encontrado');
     }
-  
     return task;
   }
-  
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async update(id: number, updateTaskDto: UpdateTaskDto) {
-    await this.trabajosRepository.update(id, updateTaskDto);
-    const task = this.trabajosRepository.findOne({ where: { id } });
+    //return `This action updates a #${id} task`;
+    await this.taskRepository.update(id, updateTaskDto);
+    const task = this.taskRepository.findOne({ where: { id } });
     if (!task) {
       throw new BadRequestException('No se puede actualizar');
     }
     return task;
   }
 
-  async desactivar_trabajo(id: number): Promise<boolean> {
-    const task = await this.trabajosRepository.findOne({ where: { id } });
-    if (!task) {
-      return false;
-    }
-    task.estate = false;
-    const estadoDesactivado = await this.estadosTrabajoRepository.findOne({ where: { nombre: 'Desactivado' } });
-    task.estadoTrabajo = estadoDesactivado;
-    await this.trabajosRepository.save(task);
-    return true;
+  remove(id: number) {
+    this.taskRepository.delete(id);
+    return `This action removes a #${id} task`;
   }
-
-  async activar_trabajo(id: number): Promise<boolean> {
-    const task = await this.trabajosRepository.findOne({ where: { id } });
-    if (!task) {
-      return false;
-    }
-
-    task.estate = true;
-    const estadoDisponible = await this.estadosTrabajoRepository.findOne({ where: { nombre: 'Disponible' } });
-    task.estadoTrabajo = estadoDisponible;
-
-    await this.trabajosRepository.save(task);
-    return true;
-  }
-
 }
