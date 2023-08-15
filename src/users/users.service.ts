@@ -26,12 +26,18 @@ export class UsersService {
   ) {}
   async create(createUserDto: CreateUserDto, id: number) {
     //return 'This action adds a new user';
+    console.log(id);
+    console.log(createUserDto);
+    // console.log(CreateUserDto.rolId);
+    
     try {
       const rol = await this.rolRepository.findOne({
-        where: { id:id },
+        where: { id:createUserDto.rolId },
         // where: { id:CreateTaskDto.uId },
         //: CreateTaskDto.userId
       });
+      console.log(rol);
+      
       const { password, ...useData } = createUserDto;
       console.log(useData);
       

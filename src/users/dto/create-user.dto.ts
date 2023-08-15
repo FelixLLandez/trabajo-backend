@@ -26,5 +26,6 @@ export class CreateUserDto {
   @IsNumber()
   edad: number;
   //@IsNumber()
-  static rolId: number;
+  rolId: number;
+  // static rolId: number;
 }
