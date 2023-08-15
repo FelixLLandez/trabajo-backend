@@ -44,14 +44,14 @@ export class AnunciosService {
 
   findAll() {
     const anuncios = this.anuncioRepository.find({
-      relations: ['user', 'direccion'],
+      relations: ['user', 'direccion', 'postulacion'],
     });
     return anuncios;
   }
 
   findOne(id: number) {
     const anuncio = this.anuncioRepository.findOne({
-      relations: ['user', 'direccion'],
+      relations: ['user', 'direccion', 'postulacion'],
       where: { id },
     });
     if (!anuncio) {
