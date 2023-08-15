@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -52,6 +53,18 @@ export class UsersService {
     //return user;
   }
 
+  async updateProfileImage(id: number, imageName: string): Promise<User> {
+    const user = await this.userRepository.findOne({where:{id}});
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.fotoPerfil = imageName;
+    console.log(user);
+    
+    return this.userRepository.save(user);
+  }
+
   findAll() {
     //return `This action returns all users`;
     const users = this.userRepository.find();
@@ -61,7 +74,7 @@ export class UsersService {
   async findOne(id: number) {
     //return `This action returns a #${id} user`;
     const user = await this.userRepository.findOne({
-      relations: ['task'],
+      relations: ['anuncio', 'realizado'],
       where: { id },
     });
     if (!user) {

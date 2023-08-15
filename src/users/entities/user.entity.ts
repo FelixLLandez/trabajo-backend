@@ -26,6 +26,8 @@ export class User {
   telefono: string;
   @Column('int', { nullable: true })
   edad: number;
+  @Column({ nullable: true }) 
+  fotoPerfil: string;
   @ManyToOne(() => Rol, (rol) => rol.user, { nullable: false })
   rol: Rol
   @OneToMany(() => Task, (t) => t.user)
