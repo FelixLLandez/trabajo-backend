@@ -67,14 +67,16 @@ export class UsersService {
 
   findAll() {
     //return `This action returns all users`;
-    const users = this.userRepository.find();
+    const users = this.userRepository.find({
+      relations: ['anuncio', 'realizado', 'rol'],
+    });
     return users;
   }
 
   async findOne(id: number) {
     //return `This action returns a #${id} user`;
     const user = await this.userRepository.findOne({
-      relations: ['anuncio', 'realizado'],
+      relations: ['anuncio', 'realizado', 'rol'],
       where: { id },
     });
     if (!user) {
@@ -101,6 +103,7 @@ export class UsersService {
   async login(user: loginDto) {
     const { password, email } = user;
     const userFind = await this.userRepository.findOne({
+      relations: ['rol'],
       where: { email },
       select: {
         id:true,
@@ -111,8 +114,11 @@ export class UsersService {
         apellidos: true,
         sexo: true,
         activo: true,
+        // rolId: true,
       },
     });
+    console.log(userFind);
+    
     if (!userFind) {
       throw new UnauthorizedException('Credentials not found');
     }
@@ -122,6 +128,7 @@ export class UsersService {
     delete userFind.password;
     console.log(userFind);
     console.log(userFind.id);
+    
     return {
       ...userFind,
       token: this.getJWToken({
@@ -129,6 +136,7 @@ export class UsersService {
         nombre: userFind.nombre,
         apellidos: userFind.apellidos,
       }),
+    
     };
     //return userFind;
   }
