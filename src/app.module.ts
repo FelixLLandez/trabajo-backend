@@ -13,6 +13,10 @@ import { DireccionModule } from './direccion/direccion.module';
 import { Direccion } from './direccion/entities/direccion.entity';
 import { Rol } from './rol/entities/rol.entity';
 import { AnunciosModule } from './anuncios/anuncios.module';
+import { RealizadosModule } from './realizados/realizados.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { PostulacionesModule } from './postulaciones/postulaciones.module';
+
 
 @Module({
   imports: [
@@ -37,6 +41,12 @@ import { AnunciosModule } from './anuncios/anuncios.module';
     RolModule,
     DireccionModule,
     AnunciosModule,
+    RealizadosModule,
+    // MulterModule.register({
+    //   //storage: '../uploads'
+    //   dest: '../uploads', // Directorio donde se guardarán los archivos subidos
+    // }),
+    PostulacionesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

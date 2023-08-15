@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { DireccionService } from './direccion.service';
 import { CreateDireccionDto } from './dto/create-direccion.dto';
 import { UpdateDireccionDto } from './dto/update-direccion.dto';
@@ -10,6 +10,10 @@ export class DireccionController {
   @Post('/create')
   create(@Body() createDireccionDto: CreateDireccionDto, userid:number) {
     return this.direccionService.create(createDireccionDto, userid);
+  }
+  @Get('xuser')
+  xuser(@Query('usuario') id: number) {
+    return this.direccionService.xuser(id);
   }
 
   @Get('/allDir')

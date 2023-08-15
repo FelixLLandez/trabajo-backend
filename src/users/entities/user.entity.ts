@@ -1,5 +1,6 @@
 import { Anuncio } from 'src/anuncios/entities/anuncio.entity';
 import { Direccion } from 'src/direccion/entities/direccion.entity';
+import { Realizado } from 'src/realizados/entities/realizado.entity';
 import { Rol } from 'src/rol/entities/rol.entity';
 import { Task } from 'src/task/entities/task.entity';
 import { Column, Entity, OneToMany, OneToOne, JoinColumn, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
@@ -25,6 +26,8 @@ export class User {
   telefono: string;
   @Column('int', { nullable: true })
   edad: number;
+  @Column({ nullable: true }) 
+  fotoPerfil: string;
   @ManyToOne(() => Rol, (rol) => rol.user, { nullable: false })
   rol: Rol
   @OneToMany(() => Task, (t) => t.user)
@@ -33,4 +36,6 @@ export class User {
   anuncio: Anuncio[];
   @OneToMany(() => Direccion, (direccion) => direccion.user)
   direccion: Direccion[];
+  @OneToMany(() => Realizado, (realizado) => realizado.user)
+  realizado: Realizado[];
 }

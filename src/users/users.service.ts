@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -25,12 +26,18 @@ export class UsersService {
   ) {}
   async create(createUserDto: CreateUserDto, id: number) {
     //return 'This action adds a new user';
+    console.log(id);
+    console.log(createUserDto);
+    // console.log(CreateUserDto.rolId);
+    
     try {
       const rol = await this.rolRepository.findOne({
-        where: { id:id },
+        where: { id:createUserDto.rolId },
         // where: { id:CreateTaskDto.uId },
         //: CreateTaskDto.userId
       });
+      console.log(rol);
+      
       const { password, ...useData } = createUserDto;
       console.log(useData);
       
@@ -52,16 +59,30 @@ export class UsersService {
     //return user;
   }
 
+  async updateProfileImage(id: number, imageName: string): Promise<User> {
+    const user = await this.userRepository.findOne({where:{id}});
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.fotoPerfil = imageName;
+    console.log(user);
+    
+    return this.userRepository.save(user);
+  }
+
   findAll() {
     //return `This action returns all users`;
-    const users = this.userRepository.find();
+    const users = this.userRepository.find({
+      relations: ['anuncio', 'realizado', 'rol'],
+    });
     return users;
   }
 
   async findOne(id: number) {
     //return `This action returns a #${id} user`;
     const user = await this.userRepository.findOne({
-      relations: ['task'],
+      relations: ['anuncio', 'realizado', 'rol'],
       where: { id },
     });
     if (!user) {
@@ -88,6 +109,7 @@ export class UsersService {
   async login(user: loginDto) {
     const { password, email } = user;
     const userFind = await this.userRepository.findOne({
+      relations: ['rol'],
       where: { email },
       select: {
         id:true,
@@ -98,8 +120,11 @@ export class UsersService {
         apellidos: true,
         sexo: true,
         activo: true,
+        // rolId: true,
       },
     });
+    console.log(userFind);
+    
     if (!userFind) {
       throw new UnauthorizedException('Credentials not found');
     }
@@ -109,6 +134,7 @@ export class UsersService {
     delete userFind.password;
     console.log(userFind);
     console.log(userFind.id);
+    
     return {
       ...userFind,
       token: this.getJWToken({
@@ -116,6 +142,7 @@ export class UsersService {
         nombre: userFind.nombre,
         apellidos: userFind.apellidos,
       }),
+    
     };
     //return userFind;
   }

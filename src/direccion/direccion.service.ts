@@ -29,6 +29,19 @@ export class DireccionService {
     // return 'This action adds a new direccion';
   }
 
+  async xuser(uid:number) {
+    const user = await this.userRepository.findOne({
+      where: { id:uid},
+      //: CreateTaskDto.userId
+    });
+
+    const direcciones = await this.direccionRepository.find({
+      where: { user: user },
+    });
+    return direcciones;
+  }
+
+
   findAll() {
     const direcciones = this.direccionRepository.find();
     return direcciones;

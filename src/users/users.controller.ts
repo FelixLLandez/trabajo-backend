@@ -8,20 +8,33 @@ import {
   Delete,
   UsePipes,
   ValidationPipe,
+  UseInterceptors,
+  UploadedFile,
+  Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { loginDto } from './dto/login.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 @UsePipes(new ValidationPipe())
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Put(':id/fotoPerfil')
+  @UseInterceptors(FileInterceptor('fotoPerfil'))// 'fotoPerfil' es el nombre del campo en el formulario
+  async uploadProfileImage(@Param('id') id: number, @UploadedFile() file: Express.Multer.File) {
+    console.log(file);
+    
+    const updatedUser = await this.usersService.updateProfileImage(id, file.filename);
+    return updatedUser;
+  }
+
   @Post('register')
-  create(@Body() createUserDto: CreateUserDto, id: number) {
-    return this.usersService.create(createUserDto, id);
+  create(@Body() createUserDto: CreateUserDto, rolId: number) {
+    return this.usersService.create(createUserDto, createUserDto.rolId);
   }
 
   @Post('login')
