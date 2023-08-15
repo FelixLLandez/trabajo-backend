@@ -6,7 +6,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { Rol } from 'src/rol/entities/rol.entity';
-import { Direccion } from 'src/direccion/entities/direccion.entity';
 import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
@@ -21,7 +20,6 @@ import { MulterModule } from '@nestjs/platform-express';
       signOptions: { expiresIn: '1h' },
     }),
     MulterModule.register({
-      //storage: '../uploads'
       dest: './uploads/fotoUsuario', // Directorio donde se guardarán los archivos subidos
     }),
   ],

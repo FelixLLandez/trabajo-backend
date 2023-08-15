@@ -12,7 +12,7 @@ export class RolController {
     return this.rolService.create(createRolDto);
   }
 
-  @Get('allRoles')
+  @Get('/roles')
   findAll() {
     return this.rolService.findAll();
   }

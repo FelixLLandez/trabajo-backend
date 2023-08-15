@@ -3,10 +3,13 @@ import { FindOperator } from 'typeorm/find-options/FindOperator';
 
 export class CreateTaskDto {
   @IsString()
-  title: string;
+  nombre: string;
   @IsString()
-  description: string;
+  direccion: string;
+  @IsString()
+  descripcion: string;
   @IsNumber()
-  important: number;
+  precio: number;
+
   static uId: number | FindOperator<number>;
 }
